@@ -13,5 +13,6 @@ class BrowseGamesViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Browse Games"
+        
     }
 }
