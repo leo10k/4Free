@@ -67,6 +67,9 @@ class HomeViewController: UIViewController {
         self.navigationController?.view.backgroundColor = UIColor.clear
     }
     
+    func configure(with model: HomeViewController) {
+    }
+    
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
