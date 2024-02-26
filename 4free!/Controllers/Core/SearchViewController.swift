@@ -11,7 +11,7 @@ class SearchViewController: UIViewController {
     
     private let discoverTable: UITableView = {
         let table = UITableView()
-        table.register(GameDetailTableViewCell.self, forCellReuseIdentifier: GameDetailTableViewCell.identifier)
+        table.register(GameListTableViewCell.self, forCellReuseIdentifier: GameListTableViewCell.identifier)
         return table
     } ()
     
@@ -52,7 +52,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: GameDetailTableViewCell.identifier, for: indexPath) as? GameDetailTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: GameListTableViewCell.identifier, for: indexPath) as? GameListTableViewCell else {
             return UITableViewCell()
         }
         
@@ -63,9 +63,14 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         return 120
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let vc = GamePreviewViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func searchResultsViewControllerDidTapItem(_ viewModel: HomeViewController) {
         let vc = HomeViewController()
         self.navigationController?.pushViewController(vc, animated: true)
-        
     }
 }

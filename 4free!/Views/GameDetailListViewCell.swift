@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GameDetailTableViewCell: UITableViewCell {
+class GameListTableViewCell: UITableViewCell {
     
     static let identifier = "GameDetailTableViewCell"
     

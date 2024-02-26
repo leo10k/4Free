@@ -88,15 +88,15 @@ class GameUIView: UIView {
         ]
         
         let bannerImageViewConstraints = [
+            bannerImageView.topAnchor.constraint(equalTo: topAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             bannerImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            bannerImageView.topAnchor.constraint(equalTo: topAnchor, constant: -40),
-            bannerImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+        
         ]
         
         let titleLabelConstraints = [
             titleLabel.centerXAnchor.constraint(equalTo: bannerImageView.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: bannerImageView.centerYAnchor)
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 80)
         ]
         
         let categoriesGamesButtonConstraints = [
@@ -107,7 +107,7 @@ class GameUIView: UIView {
         ]
         
         let principalLabelConstraints = [
-            principalLabel.topAnchor.constraint(equalTo: bannerImageView.bottomAnchor, constant: -30),
+            principalLabel.topAnchor.constraint(equalTo: categoriesGamesButton.bottomAnchor, constant: 100),
             principalLabel.centerXAnchor.constraint(equalTo: bannerImageView.centerXAnchor)
         ]
         
@@ -116,11 +116,6 @@ class GameUIView: UIView {
         NSLayoutConstraint.activate(titleLabelConstraints)
         NSLayoutConstraint.activate(categoriesGamesButtonConstraints)
         NSLayoutConstraint.activate(principalLabelConstraints)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        bannerImageView.frame = bounds
     }
     
     @objc private func didTapButton() {

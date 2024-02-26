@@ -19,8 +19,6 @@ class HomeViewController: UIViewController {
         return tableView
     }()
     
-    
-    
     let models = [
         "New York",
         "London",
@@ -58,7 +56,7 @@ class HomeViewController: UIViewController {
         tableView.dataSource = self
         tableView.frame = view.bounds
         
-        let headerView = GameUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 350))
+        let headerView = GameUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 400))
         tableView.tableHeaderView = headerView
         
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -89,6 +87,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 300
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let vc = GamePreviewViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
