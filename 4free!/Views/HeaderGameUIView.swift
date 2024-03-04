@@ -19,12 +19,26 @@ class GameUIView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Explore and discover new free games to play!"
-        label.font = .boldSystemFont(ofSize: 16)
+        label.text = "Unlock Your Gaming Adventure: Explore Unlimited Free Games Now!"
+        label.font = .boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        label.alpha = 0.8
+        label.numberOfLines = 0
         return label
-    } ()
+    }()
     
-    private let categoriesGamesButton: UIButton = {
+    private let subTitleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Dive into a vast selection of games tailored to your preferences. With endless options at your fingertips, finding your next gaming obsession is just a tap away. Explore, discover, and play to your heart's content – your next gaming adventure awaits!"
+        label.font = .systemFont(ofSize: 14)
+        label.alpha = 0.8
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let browseGamesButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Browse Games", for: .normal)
@@ -34,7 +48,7 @@ class GameUIView: UIView {
         button.layer.borderColor = UIColor.gray.cgColor
         button.layer.cornerRadius = 5
         return button
-    } ()
+    }()
     
     private let bannerImageView: UIImageView = {
         let imageView = UIImageView()
@@ -43,17 +57,8 @@ class GameUIView: UIView {
         imageView.alpha = 0.3
         imageView.image = UIImage(named: "cs2")
         return imageView
-    } ()
-    
-    private let principalLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Mais jogados Recentemente"
-        label.font = UIFont.systemFont(ofSize: 24)
-        label.textColor = .white
-        return label
     }()
-    
+        
     private func addGradient() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [
@@ -70,11 +75,11 @@ class GameUIView: UIView {
         addSubview(bannerImageView)
         addGradient()
         
-        addSubview(categoriesGamesButton)
+        addSubview(browseGamesButton)
         addSubview(titleLabel)
-        addSubview(principalLabel)
+        addSubview(subTitleLabel)
         applyConstraints()
-        categoriesGamesButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+        browseGamesButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         
     }
     
@@ -89,33 +94,36 @@ class GameUIView: UIView {
         
         let bannerImageViewConstraints = [
             bannerImageView.topAnchor.constraint(equalTo: topAnchor),
-            bannerImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            bannerImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-        
+            bannerImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            bannerImageView.heightAnchor.constraint(equalToConstant: 300)
         ]
         
         let titleLabelConstraints = [
-            titleLabel.centerXAnchor.constraint(equalTo: bannerImageView.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 80)
+            titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 60),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ]
         
-        let categoriesGamesButtonConstraints = [
-            categoriesGamesButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50),
-            categoriesGamesButton.centerXAnchor.constraint(equalTo: bannerImageView.centerXAnchor),
-            categoriesGamesButton.widthAnchor.constraint(equalToConstant: 130),
-            categoriesGamesButton.heightAnchor.constraint(equalToConstant: 40)
+        let subTitleLabelConstraints = [
+            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            subTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            subTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ]
         
-        let principalLabelConstraints = [
-            principalLabel.topAnchor.constraint(equalTo: categoriesGamesButton.bottomAnchor, constant: 100),
-            principalLabel.centerXAnchor.constraint(equalTo: bannerImageView.centerXAnchor)
+        let browseGamesButtonConstraints = [
+            browseGamesButton.topAnchor.constraint(equalTo: subTitleLabel.bottomAnchor, constant: 30),
+            browseGamesButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            browseGamesButton.widthAnchor.constraint(equalToConstant: 130),
+            browseGamesButton.heightAnchor.constraint(equalToConstant: 40)
         ]
+
         
         NSLayoutConstraint.activate(containerViewConstraints)
         NSLayoutConstraint.activate(bannerImageViewConstraints)
         NSLayoutConstraint.activate(titleLabelConstraints)
-        NSLayoutConstraint.activate(categoriesGamesButtonConstraints)
-        NSLayoutConstraint.activate(principalLabelConstraints)
+        NSLayoutConstraint.activate(subTitleLabelConstraints)
+        NSLayoutConstraint.activate(browseGamesButtonConstraints)
     }
     
     @objc private func didTapButton() {

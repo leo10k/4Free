@@ -11,6 +11,8 @@ class HomeViewController: UIViewController {
     
     let imageUrls: [String] = ["cs2"]
     
+    
+    
     private var headerView: GameUIView?
     
     private let tableView: UITableView = {
@@ -56,7 +58,7 @@ class HomeViewController: UIViewController {
         tableView.dataSource = self
         tableView.frame = view.bounds
         
-        let headerView = GameUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 400))
+        let headerView = GameUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 320))
         tableView.tableHeaderView = headerView
         
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
