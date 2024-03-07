@@ -11,8 +11,6 @@ class HomeViewController: UIViewController {
     
     let imageUrls: [String] = ["cs2"]
     
-    
-    
     private var headerView: GameUIView?
     
     private let tableView: UITableView = {

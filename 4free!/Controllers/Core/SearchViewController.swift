@@ -36,8 +36,6 @@ class SearchViewController: UIViewController {
         
         discoverTable.delegate = self
         discoverTable.dataSource = self
-        
-        
     }
     
     override func viewDidLayoutSubviews() {
