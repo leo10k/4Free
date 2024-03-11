@@ -13,7 +13,7 @@ class SearchViewController: UIViewController {
         let table = UITableView()
         table.register(GameListTableViewCell.self, forCellReuseIdentifier: GameListTableViewCell.identifier)
         return table
-    } ()
+    }()
     
     private let searchController: UISearchController = {
         //TODO: implement the UISearchController
@@ -21,7 +21,7 @@ class SearchViewController: UIViewController {
         controller.searchBar.placeholder = "Search for a Game"
         controller.searchBar.searchBarStyle = .minimal
         return controller
-    } ()
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
