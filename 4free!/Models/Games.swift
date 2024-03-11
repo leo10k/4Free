@@ -15,7 +15,7 @@ struct Games: Codable {
     let id: Int
     let title: String
     let short_description: String
-    let description: String
+    let gameDescription: String
     let genre: String
     let plataform: String
     let developer: String
