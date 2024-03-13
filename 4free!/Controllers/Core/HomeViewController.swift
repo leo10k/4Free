@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    let imageUrls: [String] = ["cs2"]
+    private var games: [Game] = [Game]()
     
     private var headerView: GameUIView?
     
@@ -18,34 +18,6 @@ class HomeViewController: UIViewController {
         tableView.register(GamesTableViewCell.self, forCellReuseIdentifier: GamesTableViewCell.identifier)
         return tableView
     }()
-    
-    let models = [
-        "New York",
-        "London",
-        "Hong Kong",
-        "Rio",
-        "Seattle",
-        "New York",
-        "London",
-        "Hong Kong",
-        "Rio",
-        "Seattle",
-        "New York",
-        "London",
-        "Hong Kong",
-        "Rio",
-        "Seattle",
-        "New York",
-        "London",
-        "Hong Kong",
-        "Rio",
-        "Seattle",
-        "New York",
-        "London",
-        "Hong Kong",
-        "Rio",
-        "Seattle"
-    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,9 +35,28 @@ class HomeViewController: UIViewController {
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        loadGames()
     }
     
-    func configure(with model: HomeViewController) {
+    private func loadGames() {
+        APICaller.shered.getGames { [weak self] result in
+            switch result {
+            case .success(let games):
+                self?.games = games
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func navigateToGamePreview(with gameId: Int) {
+        let gamePreviewVC = GamePreviewViewController()
+        gamePreviewVC.gameId = gameId
+        navigationController?.pushViewController(gamePreviewVC, animated: true)
     }
     
 }
@@ -73,7 +64,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return models.count
+        return games.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -81,7 +72,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: GamesTableViewCell.identifier, for: indexPath) as? GamesTableViewCell else {
             return UITableViewCell()
         }
-        
+        let game = games[indexPath.row]
+        cell.configure(with: GameViewModel(title: game.title ?? "Unknown title name", thumbnail: game.thumbnail ?? "Unknown"))
         return cell
     }
     
@@ -90,14 +82,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let vc = GamePreviewViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        let selectedGame = games[indexPath.row]
+        navigateToGamePreview(with: selectedGame.id)
     }
+    
 }
-
-
-
-
-
-

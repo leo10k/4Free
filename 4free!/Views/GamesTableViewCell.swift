@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import SDWebImage
+
+protocol GamesTableViewCellDelegate: AnyObject {
+    func gamesTableViewCellDidTapCell(_ cell: GamesTableViewCell, viewModel: GamePreviewViewController)
+}
 
 class GamesTableViewCell: UITableViewCell {
     
     static let identifier = "GamesTableViewCell"
     
-    let containerView: UIView = {
+    private let containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor(red: CGFloat(0x32) / 255.0, green: CGFloat(0x35) / 255.0, blue: CGFloat(0x38) / 255.0, alpha: 1.0)
@@ -20,7 +25,7 @@ class GamesTableViewCell: UITableViewCell {
         return view
     }()
     
-    let isFreeButton: UIButton = {
+    private let isFreeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Free", for: .normal)
@@ -31,15 +36,14 @@ class GamesTableViewCell: UITableViewCell {
         return button
     }()
 
-    let gameImageView: UIImageView = {
+    private let gameImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "cs2")
         return imageView
     }()
     
-    let gameNameLabel: UILabel = {
+    private let gameNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Counter-Strike 2"
@@ -59,37 +63,46 @@ class GamesTableViewCell: UITableViewCell {
     }
     
     private func applyConstraints() {
-            let containerViewConstraints = [
-                containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-                containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-                containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-                containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-            ]
+        let containerViewConstraints = [
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+        ]
+        
+        let gameImageViewConstraints = [
+            gameImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            gameImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            gameImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: -30),
+            gameImageView.heightAnchor.constraint(equalTo: containerView.heightAnchor),
             
-            let gameImageViewConstraints = [
-                gameImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                gameImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                gameImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: -30),
-                gameImageView.heightAnchor.constraint(equalTo: containerView.heightAnchor)
-            ]
-            
-            let isFreeButtonConstraints = [
-                isFreeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
-                isFreeButton.centerYAnchor.constraint(equalTo: gameNameLabel.centerYAnchor),
-                isFreeButton.widthAnchor.constraint(equalToConstant: 50)
-            ]
-            
-            let gameNameLabelConstraints = [
-                gameNameLabel.leadingAnchor.constraint(equalTo: gameImageView.leadingAnchor, constant: 10),
-                gameNameLabel.trailingAnchor.constraint(equalTo: isFreeButton.leadingAnchor, constant: -10),
-                gameNameLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12)
-            ]
-            
-            NSLayoutConstraint.activate(containerViewConstraints)
-            NSLayoutConstraint.activate(gameImageViewConstraints)
-            NSLayoutConstraint.activate(isFreeButtonConstraints)
-            NSLayoutConstraint.activate(gameNameLabelConstraints)
-        }
+        ]
+        
+        let isFreeButtonConstraints = [
+            isFreeButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
+            isFreeButton.centerYAnchor.constraint(equalTo: gameNameLabel.centerYAnchor),
+            isFreeButton.widthAnchor.constraint(equalToConstant: 50)
+        ]
+        
+        let gameNameLabelConstraints = [
+            gameNameLabel.leadingAnchor.constraint(equalTo: gameImageView.leadingAnchor, constant: 10),
+            gameNameLabel.trailingAnchor.constraint(equalTo: isFreeButton.leadingAnchor, constant: -10),
+            gameNameLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12)
+        ]
+        
+        NSLayoutConstraint.activate(containerViewConstraints)
+        NSLayoutConstraint.activate(gameImageViewConstraints)
+        NSLayoutConstraint.activate(isFreeButtonConstraints)
+        NSLayoutConstraint.activate(gameNameLabelConstraints)
+    }
+    
+    public func configure(with model: GameViewModel) {
+        
+        guard let url = URL(string: "\(model.thumbnail)") else {return}
+        
+        gameImageView.sd_setImage(with: url, completed: nil)
+        gameNameLabel.text = model.title
+    }
     
     required init(coder: NSCoder) {
         fatalError()

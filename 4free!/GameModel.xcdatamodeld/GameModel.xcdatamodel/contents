@@ -9,6 +9,7 @@
         <attribute name="plataform" optional="YES" attributeType="String"/>
         <attribute name="release_date" optional="YES" attributeType="String"/>
         <attribute name="short_description" optional="YES" attributeType="String"/>
+        <attribute name="thumbnail" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
 </model>

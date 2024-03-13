@@ -6,14 +6,23 @@
 //
 
 import UIKit
+import SDWebImage
 
 class GamePreviewViewController: UIViewController {
     
+    private var game: Game?
+    var gameId: Int?
+    
+    private let scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        return scroll
+    }()
+
     private let gameImageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
-        image.image = UIImage(named: "cs2")
         return image
     }()
     
@@ -41,7 +50,7 @@ class GamePreviewViewController: UIViewController {
     private let titleGameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Conter Strike 2"
+        label.text = ""
         label.font = UIFont.boldSystemFont(ofSize: 24)
         return label
     }()
@@ -49,7 +58,7 @@ class GamePreviewViewController: UIViewController {
     private let subTitleGameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Counter-Strike 2 is a multiplayer tactical first-person shooter. In the game, two teams, the Counter-Terrorists and the Terrorists, compete to complete different objectives, depending on the game mode selected; players are split into these teams at the start of each match."
+        label.text = ""
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 18)
         return label
@@ -58,31 +67,67 @@ class GamePreviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        view.addSubview(gameImageView)
-        view.addSubview(freeButton)
-        view.addSubview(playNowButton)
-        view.addSubview(titleGameLabel)
-        view.addSubview(subTitleGameLabel)
+        view.addSubview(scrollView)
+        scrollView.addSubview(gameImageView)
+        scrollView.addSubview(freeButton)
+        scrollView.addSubview(playNowButton)
+        scrollView.addSubview(titleGameLabel)
+        scrollView.addSubview(subTitleGameLabel)
+        
+        
         configureConstraints()
+
+        
+        if let gameId = gameId {
+            APICaller.shered.getGamesById(id: gameId) { [weak self] result in
+                switch result {
+                case .success(let game):
+                    self?.game = game
+                    DispatchQueue.main.async {
+                        self?.updateUI()
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func updateUI() {
+        guard let game = game else { return }
+        
+        guard let url = URL(string: game.thumbnail ?? "") else {return}
+        
+        gameImageView.sd_setImage(with: url)
+        titleGameLabel.text = game.title
+        subTitleGameLabel.text = game.description
     }
     
     func configureConstraints() {
         
+        let scrollViewConstraints = [
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ]
+        
         let gameImageViewConstraints = [
-            gameImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            gameImageView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
             gameImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             gameImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            //gameImageView.heightAnchor.constraint(equalToConstant: 320)
         ]
         
         let freeButtonConstraints = [
-            freeButton.topAnchor.constraint(equalTo: gameImageView.bottomAnchor, constant: -80),
+            freeButton.topAnchor.constraint(equalTo: gameImageView.bottomAnchor, constant: 10),
             freeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             freeButton.heightAnchor.constraint(equalToConstant: 40),
             freeButton.widthAnchor.constraint(equalToConstant: 56)
         ]
         
         let playNowButtonConstraints = [
-            playNowButton.topAnchor.constraint(equalTo: gameImageView.bottomAnchor, constant: -80),
+            playNowButton.topAnchor.constraint(equalTo: gameImageView.bottomAnchor, constant: 10),
             playNowButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             playNowButton.heightAnchor.constraint(equalToConstant: 40),
             playNowButton.widthAnchor.constraint(equalToConstant: 280)
@@ -97,9 +142,11 @@ class GamePreviewViewController: UIViewController {
         let subTitleGameLabelConstraints = [
             subTitleGameLabel.topAnchor.constraint(equalTo: titleGameLabel.bottomAnchor, constant: 8),
             subTitleGameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            subTitleGameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            subTitleGameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            subTitleGameLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ]
         
+        NSLayoutConstraint.activate(scrollViewConstraints)
         NSLayoutConstraint.activate(gameImageViewConstraints)
         NSLayoutConstraint.activate(freeButtonConstraints)
         NSLayoutConstraint.activate(playNowButtonConstraints)
