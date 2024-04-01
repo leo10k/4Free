@@ -23,14 +23,13 @@ class GameListTableViewCell: UITableViewCell {
        let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
-        image.image = UIImage(named: "cs2")
         return image
     }()
     
     private let titleGameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Counter Strike 2"
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 16)
         return label
     }()
@@ -38,7 +37,7 @@ class GameListTableViewCell: UITableViewCell {
     private let subTitleGameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "A first player shooter game, you objective it's you play agast five online playes and try to win the round"
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 1
         return label
@@ -47,7 +46,6 @@ class GameListTableViewCell: UITableViewCell {
     private let gameCategoryButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Shooter", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.titleLabel?.adjustsFontSizeToFitWidth = true
@@ -110,6 +108,16 @@ class GameListTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate(subTitleGameLabelConstraints)
         NSLayoutConstraint.activate(gameCategoryButtonConstraints)
         
+    }
+    
+    public func configure(with model: GamePreviewViewModel) {
+        
+        guard let url = URL(string: "\(model.thumbnail)") else {return}
+        
+        gameImageView.sd_setImage(with: url, completed: nil)
+        titleGameLabel.text = model.title
+        subTitleGameLabel.text = model.short_description
+        gameCategoryButton.setTitle(model.genre, for: .normal)
     }
     
     required init?(coder: NSCoder) {

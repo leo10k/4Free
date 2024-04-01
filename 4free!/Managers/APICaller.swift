@@ -56,4 +56,43 @@ class APICaller {
         }
         task.resume()
     }
+    
+    func getGamesByCategory(with category: String, completion: @escaping (Result<[Game], Error>) -> Void ) {
+        guard let url = URL(string: "\(Constraints.baseURL)/games?category=\(category)") else {return}
+        
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(.failure(APIError.failedTogetData))
+                return
+            }
+            
+            do {
+                let results = try JSONDecoder().decode([Game].self, from: data)
+                completion(.success(results))
+            } catch {
+                completion(.failure(APIError.failedTogetData))
+            }
+        }
+        task.resume()
+    }
+    
+    func getGamesByRelevance(completion: @escaping (Result<[Game], Error>) -> Void) {
+        
+        guard let url = URL(string: "\(Constraints.baseURL)/games?short-by-relevance") else {return}
+        
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(.failure(APIError.failedTogetData))
+                return
+            }
+            
+            do {
+                let results = try JSONDecoder().decode([Game].self, from: data)
+                completion(.success(results))
+            } catch {
+                completion(.failure(APIError.failedTogetData))
+            }
+        }
+        task.resume()
+    }
 }

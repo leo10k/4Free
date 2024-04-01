@@ -9,7 +9,9 @@ import UIKit
 
 class BrowseGamesViewController: UIViewController {
     
-    private let discoverTable: UITableView = {
+    private var games: [Game] = [Game]()
+    
+    private let tableView: UITableView = {
         let table = UITableView()
         table.register(GameListTableViewCell.self, forCellReuseIdentifier: GameListTableViewCell.identifier)
         return table
@@ -22,28 +24,51 @@ class BrowseGamesViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         
-        view.addSubview(discoverTable)
+        view.addSubview(tableView)
         
-        discoverTable.delegate = self
-        discoverTable.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        getGames()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        discoverTable.frame = view.bounds
+        tableView.frame = view.bounds
+    }
+    
+    private func getGames() {
+        APICaller.shered.getGamesByRelevance(completion: { [weak self] result in
+            switch result {
+            case .success(let games):
+                self?.games = games
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        })
+    }
+    
+    func navigateToGamePreview(with gameId: Int) {
+        let gamePreviewVC = GamePreviewViewController()
+        gamePreviewVC.gameId = gameId
+        navigationController?.pushViewController(gamePreviewVC, animated: true)
     }
 }
 
 extension BrowseGamesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return games.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: GameListTableViewCell.identifier, for: indexPath) as? GameListTableViewCell else {
             return UITableViewCell()
         }
-        
+        let game = games[indexPath.row]
+        cell.configure(with: GamePreviewViewModel(title: game.title ?? "Unknow", thumbnail: game.thumbnail ?? "Unknow", short_description: game.short_description ?? "Unknow", genre: game.genre ?? "Unknow"))
         return cell
     }
     
@@ -52,8 +77,7 @@ extension BrowseGamesViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let vc = GamePreviewViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        let selectedGame = games[indexPath.row]
+        navigateToGamePreview(with: selectedGame.id)
     }
 }
