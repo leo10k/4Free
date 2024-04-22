@@ -16,7 +16,7 @@ enum APIError: Error {
 }
 
 class APICaller {
-    static let shered = APICaller()
+    static let shared = APICaller()
     
     func getGames(completion: @escaping (Result<[Game], Error>) -> Void) {
         

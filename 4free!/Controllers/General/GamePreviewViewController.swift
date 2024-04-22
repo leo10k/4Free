@@ -67,6 +67,7 @@ class GamePreviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        
         view.addSubview(scrollView)
         scrollView.addSubview(gameImageView)
         scrollView.addSubview(freeButton)
@@ -74,12 +75,10 @@ class GamePreviewViewController: UIViewController {
         scrollView.addSubview(titleGameLabel)
         scrollView.addSubview(subTitleGameLabel)
         
-        
         configureConstraints()
-
         
         if let gameId = gameId {
-            APICaller.shered.getGamesById(id: gameId) { [weak self] result in
+            APICaller.shared.getGamesById(id: gameId) { [weak self] result in
                 switch result {
                 case .success(let game):
                     self?.game = game
@@ -116,7 +115,6 @@ class GamePreviewViewController: UIViewController {
             gameImageView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10),
             gameImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             gameImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
-            //gameImageView.heightAnchor.constraint(equalToConstant: 320)
         ]
         
         let freeButtonConstraints = [

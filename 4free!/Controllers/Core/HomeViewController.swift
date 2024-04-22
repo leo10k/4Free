@@ -40,7 +40,7 @@ class HomeViewController: UIViewController {
     }
     
     private func loadGames() {
-        APICaller.shered.getGames { [weak self] result in
+        APICaller.shared.getGames { [weak self] result in
             switch result {
             case .success(let games):
                 self?.games = games
@@ -59,6 +59,17 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(gamePreviewVC, animated: true)
     }
     
+    private func addToFavoriteAt(indexPath: IndexPath) {
+        DataPersistenceManager.shared.addGameToFavorite(model: games[indexPath.row]) { result in
+            switch result {
+            case .success():
+                NotificationCenter.default.post(name: NSNotification.Name("added to favorites"), object: nil)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -74,6 +85,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         }
         let game = games[indexPath.row]
         cell.configure(with: GameViewModel(title: game.title ?? "Unknown title name", thumbnail: game.thumbnail ?? "Unknown"))
+        
         return cell
     }
     
@@ -86,4 +98,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         navigateToGamePreview(with: selectedGame.id)
     }
     
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let config = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil) {[weak self] _ in
+                let favoriteAction = UIAction(title: "Add to Favorites", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    self?.addToFavoriteAt(indexPath: indexPath)
+                    
+                }
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [favoriteAction])
+            }
+        return config
+    }
 }

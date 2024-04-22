@@ -38,7 +38,7 @@ class BrowseGamesViewController: UIViewController {
     }
     
     private func getGames() {
-        APICaller.shered.getGamesByRelevance(completion: { [weak self] result in
+        APICaller.shared.getGamesByRelevance(completion: { [weak self] result in
             switch result {
             case .success(let games):
                 self?.games = games

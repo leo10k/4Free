@@ -90,7 +90,7 @@ class CategoryDetailViewController: UIViewController {
     
     private func loadGamesbyCategory() {
         guard let categoryName = GameCategory.stringValue(for: category!) else { return }
-        APICaller.shered.getGamesByCategory(with: categoryName, completion: { [weak self] result in
+        APICaller.shared.getGamesByCategory(with: categoryName, completion: { [weak self] result in
             switch result {
             case .success(let games):
                 self?.games = games
